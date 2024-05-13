@@ -96,4 +96,32 @@ module.exports = gql`
     commandes:[Commandes]
     commande(id:ID!):Commandes
   }
+  type Mutation{
+    addArticle(article:inputArticle!):Articles
+    deleteArticle(id:ID!):[Articles]
+  }
+  input inputArticle{
+    nom:String!
+    c_sous_famille :Int!
+    c_famille :Int!
+    quantite :Int!
+    reference:String!
+    um :String!
+    dateentre :String!
+# la forme de la requete:
+#{
+#   "article": {
+#     "nom":"Test product mutation",
+#     "c_sous_famille" :6,
+#     "c_famille" :2,
+#     "quantite" :300,
+#     "reference":"A4 90g/m²",
+#     "um" :"R",
+#     "dateentre" :"2022-01"
+#   }
+# }
+# { 
+#   "deleteArticleId": 99
+# }
+}
 `;

@@ -301,6 +301,25 @@ const resolvers = {
         throw new Error(err.message);
       }
     },
+  },
+  //Mutation
+  Mutation :{
+    addArticle: async (_,args)=>{
+      try {
+        const newArticle = await Articles.create(args.article);
+        return newArticle;
+      } catch (err) {
+        throw new Error(err.message);
+      }
+    },
+    deleteArticle: async (_,args)=>{
+      try {
+        return await Articles.destroy({where:{id_article: args.id}});
+         
+      } catch (err) {
+        throw new Error(err.message);
+      }
+    }
   }
 };
 
