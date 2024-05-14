@@ -7,10 +7,10 @@ const ValidInfo = require('../middleware/ValidInfo')
 const authorization = require("../middleware/Auhtorization")
 const cookie = require('cookie');
 //------registerin-----------------
-route.post('/register', authorization,ValidInfo, async (req, res) => {
+route.post('/register', authorization, ValidInfo, async (req, res) => {
   try {
     // Destructuring
-    const { nom, prenom, email, password, numero_de_telephone, grade } = req.body;
+    const { nom, prenom, email, password, numero_de_telephone, grade, sexe } = req.body;
 
     // Verifying role of admins
     console.log(req.body)
@@ -30,10 +30,10 @@ route.post('/register', authorization,ValidInfo, async (req, res) => {
     const hashPwd = await bcrypt.hash(password, salt);
 
     // Inserting data
-    const new_user = await pool.query('INSERT INTO utilisateur (nom, prenom, email, password, numero_de_telephone, grade) VALUES($1,$2,$3,$4,$5,$6) RETURNING *',
-      [nom, prenom, email, hashPwd, numero_de_telephone, grade]);
+    const new_user = await pool.query('INSERT INTO utilisateur (nom, prenom, email, password, numero_de_telephone, grade) VALUES($1,$2,$3,$4,$5,$6,$7) RETURNING *',
+      [nom, prenom, email, hashPwd, numero_de_telephone, grade, sexe]);
     res.status(200).json("ajouter avec success")
-    
+
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server error");
@@ -60,7 +60,7 @@ route.post('/login', ValidInfo, async (req, res) => {
       console.log('Invalid password');
       return res.status(401).json({ password: "Invalid password" });
     }
-    
+
     const token = jwtGenerator(user.rows[0].id, user.rows[0].grade);
     const serialized = cookie.serialize('token', token, {
       httpOnly: true,

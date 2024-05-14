@@ -6,7 +6,7 @@ const saltRound = 10;
 //------------------
 route.get('/', Auhtorization, async (req, res) => {
   try {
-    const user = await pool.query('SELECT id,nom, prenom, email,numero_de_telephone, grade FROM utilisateur WHERE id=$1', [req.user])
+    const user = await pool.query('SELECT nom , prenom FROM utilisateur WHERE id=$1', [req.user])
     res.json({ user: user.rows, role: req.role })
 
   } catch (err) {
@@ -20,11 +20,10 @@ route.put('/modify', Auhtorization, async (req, res) => {
 
     const user = await pool.query('SELECT * FROM utilisateur WHERE id=$1', [req.user]);
     const comparePassword = await bcrypt.compare(password, user.rows[0].password);
-
     if (!comparePassword) {
       return res.status(401).json('Ancien mot de passe est incorrect');
     }
-
+    
     if (newPassword === confirmationNewPassword) {
       const salt = await bcrypt.genSalt(saltRound);
       const hashPwd = await bcrypt.hash(newPassword, salt);
@@ -40,20 +39,17 @@ route.put('/modify', Auhtorization, async (req, res) => {
 });
 
 // modifier le role d'un admin ou sous-admin
-  route.put('/roleEditing/:id', Auhtorization,async (req, res) => {
-    try {
-      if (req.role !== 'admin') {
-        res.status(403).send('Not authorized');
-      } 
-      const { id } = req.params
-      const {newRole} = req.body
-      const user = await pool.query('UPDATE utilisateur SET grade=$1 WHERE id=$2', [newRole, id])
-      res.status(200).json('Role updated successfully');
-    } catch (err) {
-      console.error(err.message)
-      res.status(401).send('Sever Error')
-    }
-  })
+route.put('/edituser/:id', Auhtorization,async (req, res) => {
+  try {
+    const { id } = req.params
+    const {prenom,nom,email,numero_de_telephone,sexe,grade} = req.body
+    const user = await pool.query('UPDATE utilisateur SET prenom=$1 , nom=$2 , email=$3 , numero_de_telephone=$4 , sexe=$5 , grade=$6  WHERE id=$7', [prenom, nom, email, numero_de_telephone, sexe, grade, id])
+    res.status(200).json('Role updated successfully');
+  } catch (err) {
+    console.error(err.message)
+    res.status(401).send('Sever Error')
+  }
+})
 // supprimer un utilisateur
 route.delete('/delete/:id', Auhtorization, async (req, res) => {
   try {
