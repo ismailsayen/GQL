@@ -64,7 +64,7 @@ module.exports = gql`
   }
   type Pannes {
     id:ID!
-    pc_n_serie:String!
+    pc_n_serie:[Pc]!
     date_panee:String!
     description:String!
   }
@@ -99,6 +99,7 @@ module.exports = gql`
   type Mutation{
     addArticle(article:inputArticle!):Articles
     deleteArticle(id:ID!):[Articles]
+    addCommande(commande:inputCommande!):Commandes
   }
   input inputArticle{
     nom:String!
@@ -122,6 +123,20 @@ module.exports = gql`
 # }
 # { 
 #   "deleteArticleId": 99
+# }
+}
+input inputCommande{
+  c_bureau:Int!
+  id_article:Int!
+  date_commande:String!
+  quantite:Int!
+#   {
+#   "commande": {
+#     "c_bureau":350010010,
+#   "id_article":2,
+#   "date_commande":"2024-03-23",
+#   "quantite":4
+#   }
 # }
 }
 `;

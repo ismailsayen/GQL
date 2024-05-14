@@ -38,17 +38,6 @@ route.put('/modify', Auhtorization, async (req, res) => {
     return res.status(500).send('Internal Server Error');
   }
 });
-// affichage de tous les users 
-route.get('/gestionUsers', async (req, res) => {
-  try {
-    const users = await pool.query('SELECT * FROM UTILISATEUR')
-    res.json(users.rows)
-
-  } catch (err) {
-    console.error('SERVER ERREUR')
-    res.status(401).send('Impossible de recuperer les informations')
-  }
-})
 
 // modifier le role d'un admin ou sous-admin
   route.put('/roleEditing/:id', Auhtorization,async (req, res) => {

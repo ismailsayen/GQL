@@ -8,6 +8,7 @@ const Sousfamille = require("../sequelize/Sousfamille");
 const Articles = require("../sequelize/Articles");
 const Pc = require("../sequelize/Pc");
 const Commandes = require("../sequelize/Commandes");
+const Pannes = require("../sequelize/Pannes");
 //----------------------------------------------------------
 const resolvers = {
   Query: {
@@ -164,6 +165,14 @@ const resolvers = {
         throw new Error(err.message);
       }
     },
+    pannes:async (_,args)=>{
+      try {
+        const pannes=await Pannes.findAll();
+        return pannes
+      } catch (err) {
+        throw new Error(err.message);
+      }
+    },
   },
   // les relation entre les tables
   Famille: {
@@ -302,12 +311,55 @@ const resolvers = {
       }
     },
   },
+  Pannes:{
+      pc_n_serie:async (parent) => {
+        try {
+          const pc = await Pc.findAll({
+            where: { n_serie: parent.pc_n_serie },
+          });
+          return pc;
+        } catch (err) {
+          throw new Error(err.message);
+        }
+    },
+  },
+  Pc:{
+    service_affecte:async (parent) => {
+        try {
+          const  bureau= await Bureau.findAll({
+            where: { c_bureau: parent.servie_affecte },
+          });
+          return bureau;
+        } catch (err) {
+          throw new Error(err.message);
+        }
+    },
+    c_famille: async (parent) => {
+      try {
+        const cfm = await Famille.findAll({
+          where: { c_famille: parent.c_famille },
+        });
+        return cfm;
+      } catch (error) {
+        throw new Error(err.message);
+      }
+    },
+  },
+ 
   //Mutation
   Mutation :{
     addArticle: async (_,args)=>{
       try {
         const newArticle = await Articles.create(args.article);
         return newArticle;
+      } catch (err) {
+        throw new Error(err.message);
+      }
+    },
+    addCommande: async (_,args)=>{
+      try {
+        const newCommande = await Commandes.create(args.commande);
+        return newCommande;
       } catch (err) {
         throw new Error(err.message);
       }
